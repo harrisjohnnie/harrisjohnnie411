@@ -1,0 +1,30 @@
+if(! $Cred){ $Cred = Get-Credential coname\johnnie}
+Enter-PSSession -ComputerName  xxx  -Credential $Cred
+### sourcing
+$usf = Get-Item 'C:\temp';
+$udp = $usf.getvalue("Desktop")
+if(! $Cred){$Cred = Get-Credential}
+
+
+$List = Get-Content "C:\"
+
+$List | %{
+
+Write-Host "Confirming if server is up" -ForegroundColor Green
+if(!(Test-Connection -Computer $_ -Count 1 -ErrorAction SilentlyContinue)){
+Write-Host "$_ is not up, moving to next" -ForegroundColor Yellow
+}
+else{
+Write-Host "$_ is up, Restarting Service" -ForegroundColor Green
+
+Invoke-Command -ComputerNmae $_ -Credential $Cred -ScriptBlock {
+     CMD 1
+     CMD 2
+     CMD 3&
+}
+} | Out-File "$udp\netbackup_cert.log" -Append
+
+
+
+
+}
